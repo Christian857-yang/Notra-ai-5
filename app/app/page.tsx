@@ -17,10 +17,10 @@ export default function NotraApp() {
   // Check onboarding status on mount
   useEffect(() => {
     if (typeof window !== 'undefined') {
-      const onboarded = localStorage.getItem('notra_onboarded');
+      const onboarded = localStorage.getItem('onboarding_complete');
       if (onboarded !== 'true') {
-        // Redirect to onboarding if not completed
-        window.location.href = '/onboarding';
+        // Redirect to onboarding step 1 if not completed
+        window.location.href = '/onboarding/step1';
       }
     }
   }, []);
