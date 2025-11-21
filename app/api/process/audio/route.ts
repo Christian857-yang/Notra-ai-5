@@ -5,6 +5,9 @@ import { NotraSession, NoteSection, QuizItem, Flashcard } from "@/types/notra";
 import { writeFile, unlink } from "fs/promises";
 import { join } from "path";
 import { tmpdir } from "os";
+import { getCurrentUserPlan } from "@/lib/userPlan";
+import { USAGE_LIMITS } from "@/config/usageLimits";
+import { getUsage, incrementUsage, getMonthKey } from "@/lib/usage";
 
 const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
 const DEFAULT_MODEL = "gpt-4o-mini";
@@ -165,6 +168,25 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: 'No audio file provided' }, { status: 400 });
     }
 
+    // Check usage limits
+    const plan = getCurrentUserPlan();
+    const limits = USAGE_LIMITS[plan];
+    const monthKey = getMonthKey();
+    const used = await getUsage("audio", monthKey);
+
+    if (used >= limits.maxAudioSessionsPerMonth) {
+      return NextResponse.json(
+        {
+          error: "limit_reached",
+          message: "You have reached your monthly limit for audio transcriptions on the free plan.",
+          plan,
+          scope: "audio",
+          limit: limits.maxAudioSessionsPerMonth,
+        },
+        { status: 429 }
+      );
+    }
+
     // Transcribe audio
     const transcript = await transcribeAudio(file);
     
@@ -195,6 +217,9 @@ export async function POST(req: Request) {
       flashcards: structuredContent.flashcards,
       summaryForChat: structuredContent.summaryForChat,
     });
+
+    // Increment usage count after successful processing
+    await incrementUsage("audio", monthKey, 1);
 
     return NextResponse.json({
       sessionId: newSession.id,

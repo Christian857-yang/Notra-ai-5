@@ -2,6 +2,9 @@ import { NextResponse } from "next/server";
 import OpenAI from "openai";
 import { createSession, findSessionByHash, generateContentHash } from "@/lib/db";
 import { NotraSession, NoteSection, QuizItem, Flashcard } from "@/types/notra";
+import { getCurrentUserPlan } from "@/lib/userPlan";
+import { USAGE_LIMITS } from "@/config/usageLimits";
+import { getUsage, incrementUsage, getMonthKey } from "@/lib/usage";
 
 const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
 const DEFAULT_MODEL = "gpt-4o-mini";
@@ -163,6 +166,25 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: 'Invalid URL format' }, { status: 400 });
     }
 
+    // Check usage limits
+    const plan = getCurrentUserPlan();
+    const limits = USAGE_LIMITS[plan];
+    const monthKey = getMonthKey();
+    const used = await getUsage("video", monthKey);
+
+    if (used >= limits.maxVideoSessionsPerMonth) {
+      return NextResponse.json(
+        {
+          error: "limit_reached",
+          message: "You have reached your monthly limit for video processing on the free plan.",
+          plan,
+          scope: "video",
+          limit: limits.maxVideoSessionsPerMonth,
+        },
+        { status: 429 }
+      );
+    }
+
     // Get video transcript (placeholder for now)
     const transcript = await getVideoTranscript(url);
     
@@ -193,6 +215,9 @@ export async function POST(req: Request) {
       flashcards: structuredContent.flashcards,
       summaryForChat: structuredContent.summaryForChat,
     });
+
+    // Increment usage count after successful processing
+    await incrementUsage("video", monthKey, 1);
 
     return NextResponse.json({
       sessionId: newSession.id,

@@ -3,6 +3,10 @@ import OpenAI from "openai";
 import { getSessionById } from "@/lib/db";
 import { pickRelevantSections, trimMessages } from "@/lib/chat-utils";
 import { ChatRequestBody, ChatMode } from "@/types/notra";
+import { getCurrentUserPlan } from "@/lib/userPlan";
+import { USAGE_LIMITS } from "@/config/usageLimits";
+import { PRO_ONLY_MODELS, isProOnlyModel, type ModelKey } from "@/config/models";
+import { getUsage, incrementUsage, getDayKey } from "@/lib/usage";
 
 export const runtime = "edge";
 
@@ -45,7 +49,7 @@ DO NOT output standard Python plotting code (matplotlib) unless explicitly reque
 export async function POST(req: Request) {
   try {
     const body: ChatRequestBody = await req.json();
-    const { messages, model = "gpt-4o-mini", mode = "general", sessionId, userPlan = "free" } = body;
+    const { messages, model = "gpt-4o-mini", mode = "general", sessionId, userPlan } = body;
 
     if (!OPENAI_API_KEY) {
       return NextResponse.json({ error: "Missing API Key" }, { status: 500 });
@@ -61,12 +65,17 @@ export async function POST(req: Request) {
 
     const openai = new OpenAI({ apiKey: OPENAI_API_KEY });
 
-    // Model selection and cost control
-    let selectedModel = MODEL_MAP[model] || "gpt-4o-mini";
+    // Get user plan (use provided userPlan or get from server-side function)
+    const currentUserPlan = userPlan || getCurrentUserPlan();
     
-    // Free users: force downgrade to 4o-mini
-    if (userPlan === "free" && (model === "gpt-4o" || model === "gpt-5.1")) {
+    // Model selection and cost control
+    let selectedModel: ModelKey = (MODEL_MAP[model] || "gpt-4o-mini") as ModelKey;
+    let shouldShowUpgradeMessage = false;
+    
+    // Free users: force downgrade to 4o-mini if requesting Pro-only models
+    if (currentUserPlan === "free" && isProOnlyModel(selectedModel)) {
       selectedModel = "gpt-4o-mini";
+      shouldShowUpgradeMessage = true;
     }
 
     // Prepare messages based on mode
@@ -137,7 +146,7 @@ If the question is not related to the study material, politely redirect to the m
     ];
 
     // Set max_tokens for cost control
-    const maxTokens = userPlan === "free" ? 512 : 768;
+    const maxTokens = currentUserPlan === "free" ? 512 : 768;
 
     const completion = await openai.chat.completions.create({
       model: selectedModel,
@@ -149,10 +158,20 @@ If the question is not related to the study material, politely redirect to the m
     const encoder = new TextEncoder();
     const stream = new ReadableStream({
       async start(controller) {
+        // Add upgrade message at the beginning if needed (only for first message)
+        if (shouldShowUpgradeMessage && messages.length <= 2) {
+          const upgradeMessage = "\n\n(You are on the free plan, so this reply uses GPT-4o-mini. Upgrade to unlock GPT-4o and GPT-5.1.)\n\n";
+          controller.enqueue(encoder.encode(upgradeMessage));
+        }
+        
         for await (const chunk of completion) {
           const delta = chunk.choices[0]?.delta?.content;
           if (delta) controller.enqueue(encoder.encode(delta));
         }
+        
+        // Increment usage count after successful completion
+        await incrementUsage("chat", getDayKey(), 1);
+        
         controller.close();
       },
     });

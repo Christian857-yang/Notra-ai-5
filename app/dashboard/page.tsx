@@ -11,9 +11,14 @@ import {
   X,
   Clock,
   ExternalLink,
-  Play
+  Play,
+  Crown,
+  Sparkles
 } from 'lucide-react';
 import { NotraLogo } from '../chat/chat-ui';
+import { getCurrentUserPlan } from '@/lib/userPlan';
+import { USAGE_LIMITS } from '@/config/usageLimits';
+import NextLink from 'next/link';
 
 // Type definitions
 type ProjectType = 'document' | 'audio' | 'video';
@@ -61,6 +66,14 @@ export default function Dashboard() {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const audioInputRef = useRef<HTMLInputElement>(null);
   const [videoUrl, setVideoUrl] = useState('');
+  const [userPlan, setUserPlan] = useState<'free' | 'pro'>('free');
+  const [usage, setUsage] = useState<{
+    fileThisMonth: number;
+    audioThisMonth: number;
+    videoThisMonth: number;
+    chatToday: number;
+  } | null>(null);
+  const [limits, setLimits] = useState(USAGE_LIMITS.free);
 
   // Check if user is onboarded
   useEffect(() => {
@@ -69,6 +82,21 @@ export default function Dashboard() {
       if (onboarded !== 'true') {
         window.location.href = '/onboarding/step1';
       }
+      
+      // Get user plan and usage
+      const plan = getCurrentUserPlan();
+      setUserPlan(plan);
+      setLimits(USAGE_LIMITS[plan]);
+      
+      // Fetch usage stats
+      fetch('/api/usage')
+        .then(res => res.json())
+        .then(data => {
+          if (data.usage) {
+            setUsage(data.usage);
+          }
+        })
+        .catch(err => console.error('Failed to fetch usage:', err));
     }
   }, []);
 
@@ -307,10 +335,15 @@ export default function Dashboard() {
           <div className="max-w-6xl mx-auto">
             {/* Header */}
             <div className="mb-8">
-              <div className="flex items-center justify-between mb-2">
-                <h1 className="text-4xl md:text-5xl font-bold text-slate-900">
-                  Dashboard
-                </h1>
+              <div className="flex items-center justify-between mb-4">
+                <div>
+                  <h1 className="text-4xl md:text-5xl font-bold text-slate-900 mb-2">
+                    Dashboard
+                  </h1>
+                  <p className="text-lg text-slate-600">
+                    Upload files, record audio, or paste video links to create your notes
+                  </p>
+                </div>
                 <button
                   onClick={() => setSidebarOpen(true)}
                   className="md:hidden p-2 rounded-lg bg-white/80 backdrop-blur-sm border border-slate-200"
@@ -318,9 +351,59 @@ export default function Dashboard() {
                   <Menu className="w-6 h-6 text-slate-600" />
                 </button>
               </div>
-              <p className="text-lg text-slate-600">
-                Upload files, record audio, or paste video links to create your notes
-              </p>
+
+              {/* User Plan & Usage Display */}
+              <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-6 border-2 border-slate-200 mb-6">
+                <div className="flex items-center justify-between mb-4">
+                  <div className="flex items-center gap-3">
+                    {userPlan === 'pro' ? (
+                      <>
+                        <div className="px-3 py-1.5 bg-gradient-to-r from-amber-400 to-orange-500 text-white rounded-lg font-semibold text-sm flex items-center gap-2">
+                          <Crown className="w-4 h-4" />
+                          Pro Plan
+                        </div>
+                      </>
+                    ) : (
+                      <>
+                        <div className="px-3 py-1.5 bg-slate-200 text-slate-700 rounded-lg font-semibold text-sm">
+                          Free Plan
+                        </div>
+                        <NextLink
+                          href="/pricing"
+                          className="px-4 py-1.5 bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-lg font-semibold text-sm hover:from-indigo-700 hover:to-purple-700 transition-all flex items-center gap-2"
+                        >
+                          <Sparkles className="w-4 h-4" />
+                          Upgrade
+                        </NextLink>
+                      </>
+                    )}
+                  </div>
+                </div>
+
+                {/* Usage Stats */}
+                {usage && (
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
+                    <div>
+                      <p className="text-slate-600 mb-1">File uploads</p>
+                      <p className="font-semibold text-slate-900">
+                        {usage.fileThisMonth} / {limits.maxFileSessionsPerMonth === 9999 ? '∞' : limits.maxFileSessionsPerMonth}
+                      </p>
+                    </div>
+                    <div>
+                      <p className="text-slate-600 mb-1">Audio transcriptions</p>
+                      <p className="font-semibold text-slate-900">
+                        {usage.audioThisMonth} / {limits.maxAudioSessionsPerMonth === 9999 ? '∞' : limits.maxAudioSessionsPerMonth}
+                      </p>
+                    </div>
+                    <div>
+                      <p className="text-slate-600 mb-1">Chat messages today</p>
+                      <p className="font-semibold text-slate-900">
+                        {usage.chatToday} / {limits.maxChatMessagesPerDay === 9999 ? '∞' : limits.maxChatMessagesPerDay}
+                      </p>
+                    </div>
+                  </div>
+                )}
+              </div>
             </div>
 
             {/* Three Core Function Cards */}

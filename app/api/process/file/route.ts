@@ -5,6 +5,9 @@ import { NotraSession, NoteSection, QuizItem, Flashcard } from "@/types/notra";
 import { writeFile, unlink } from "fs/promises";
 import { join } from "path";
 import { tmpdir } from "os";
+import { getCurrentUserPlan } from "@/lib/userPlan";
+import { USAGE_LIMITS } from "@/config/usageLimits";
+import { getUsage, incrementUsage, getMonthKey } from "@/lib/usage";
 
 const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
 
@@ -163,6 +166,25 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: 'No file provided' }, { status: 400 });
     }
 
+    // Check usage limits
+    const plan = getCurrentUserPlan();
+    const limits = USAGE_LIMITS[plan];
+    const monthKey = getMonthKey();
+    const used = await getUsage("file", monthKey);
+
+    if (used >= limits.maxFileSessionsPerMonth) {
+      return NextResponse.json(
+        {
+          error: "limit_reached",
+          message: "You have reached your monthly limit for file uploads on the free plan.",
+          plan,
+          scope: "file",
+          limit: limits.maxFileSessionsPerMonth,
+        },
+        { status: 429 }
+      );
+    }
+
     // Extract text from file
     const text = await extractTextFromFile(file);
     
@@ -193,6 +215,9 @@ export async function POST(req: Request) {
       flashcards: structuredContent.flashcards,
       summaryForChat: structuredContent.summaryForChat,
     });
+
+    // Increment usage count after successful processing
+    await incrementUsage("file", monthKey, 1);
 
     return NextResponse.json({
       sessionId: newSession.id,

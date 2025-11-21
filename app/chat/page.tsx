@@ -13,6 +13,8 @@ import {
   type ChatMessage, type ChatSession, type Provider 
 } from "./chat-ui";
 import { ChatMode } from "@/types/notra";
+import { getCurrentUserPlan } from "@/lib/userPlan";
+import NextLink from 'next/link';
 
 function NotraConsoleContent() {
   const searchParams = useSearchParams();
@@ -50,7 +52,19 @@ function NotraConsoleContent() {
   const [mode, setMode] = useState<ChatMode>(urlSessionId ? "note" : "general");
   const [model, setModel] = useState<"gpt-4o-mini" | "gpt-4o" | "gpt-5.1">("gpt-4o-mini");
   const [sessionTitle, setSessionTitle] = useState<string | null>(null);
+  const [userPlan, setUserPlan] = useState<'free' | 'pro'>('free');
+  const [showProModelHint, setShowProModelHint] = useState(false);
+  const [proModelHintMessage, setProModelHintMessage] = useState('');
   
+  // Get user plan
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const plan = getCurrentUserPlan();
+      setUserPlan(plan);
+      setIsPro(plan === 'pro');
+    }
+  }, []);
+
   // Fetch session title when sessionId is present
   useEffect(() => {
     if (urlSessionId && mode === "note") {
@@ -189,6 +203,16 @@ function NotraConsoleContent() {
         }),
       });
       if (!res.ok) {
+        // Handle 429 limit reached error
+        if (res.status === 429) {
+          const errorData = await res.json().catch(() => ({}));
+          if (errorData.error === 'limit_reached') {
+            const limitMessage = `⚠️ You've reached the free plan limit\n\nYou've used up ${errorData.scope === 'chat' ? "today's free chat messages" : `your monthly ${errorData.scope} limit`}. Notra Pro gives you higher limits, faster models, and more powerful study tools.\n\n[Upgrade to Pro](${typeof window !== 'undefined' ? window.location.origin : ''}/pricing) to continue without interruptions.`;
+            setMessages(prev => [...prev, { id: `err-${Date.now()}`, role: "assistant", content: limitMessage, type: 'text' }]);
+            setIsSending(false);
+            return;
+          }
+        }
         const errorData = await res.json().catch(() => ({}));
         throw new Error(errorData.error || `Request failed with status ${res.status}`);
       }
@@ -531,8 +555,13 @@ function NotraConsoleContent() {
           if (!locked) {
             setProvider(id);
             setModel(modelMap[id] || "gpt-4o-mini");
+            setShowProModelHint(false);
           } else {
-            alert("Please upgrade to Pro to use this model.");
+            // Show upgrade hint
+            setProModelHintMessage("Notra Pro unlocks GPT-4o and GPT-5.1 for complex essays, research papers, and grad-level questions. Visit the Pricing page to see what's included.");
+            setShowProModelHint(true);
+            // Hide hint after 5 seconds
+            setTimeout(() => setShowProModelHint(false), 5000);
           }
         }}
         className={`relative px-4 py-2 rounded-xl text-sm font-bold transition-all border flex items-center gap-2 ${active ? 'bg-slate-900 text-white border-slate-900 shadow-md' : (locked) ? 'bg-white/50 text-slate-400 border-transparent cursor-not-allowed' : 'bg-white text-slate-600 border-white/50 hover:border-blue-300 hover:text-blue-600'}`}>
@@ -608,60 +637,96 @@ function NotraConsoleContent() {
            </div>
           </div>
           
-          {/* Bottom row: Mode Selection */}
-          <div className="flex items-center gap-4">
-            <div className="flex gap-2 bg-slate-200/50 p-1 rounded-xl backdrop-blur-sm">
-              <button
-                onClick={() => {
-                  if (mode === "note" && !urlSessionId) {
-                    alert("You need to open this from a specific study session to chat with that note.");
-                    return;
-                  }
-                  setMode("general");
-                }}
-                className={`px-4 py-2 rounded-lg text-sm font-semibold transition-all ${
-                  mode === "general"
-                    ? 'bg-indigo-600 text-white shadow-md'
-                    : 'text-slate-600 hover:bg-white/50'
-                }`}
-              >
-                <MessageSquare className="w-4 h-4 inline-block mr-2" />
-                General Chat
-              </button>
-              <button
-                onClick={() => {
-                  if (!urlSessionId) {
-                    alert("You need to open this from a specific study session to chat with that note.");
-                    return;
-                  }
-                  setMode("note");
-                }}
-                className={`px-4 py-2 rounded-lg text-sm font-semibold transition-all ${
-                  mode === "note"
-                    ? 'bg-indigo-600 text-white shadow-md'
-                    : 'text-slate-600 hover:bg-white/50'
-                }`}
-              >
-                <BookOpen className="w-4 h-4 inline-block mr-2" />
-                Chat with this Note
-              </button>
-            </div>
-            
-            {mode === "note" && sessionTitle && (
-              <div className="px-3 py-1 bg-indigo-50 border border-indigo-200 rounded-lg text-sm text-indigo-700">
-                From: {sessionTitle}
+          {/* Bottom row: Mode Selection & Plan Info */}
+          <div className="flex flex-col gap-3">
+            <div className="flex items-center gap-4 flex-wrap">
+              <div className="flex gap-2 bg-slate-200/50 p-1 rounded-xl backdrop-blur-sm">
+                <button
+                  onClick={() => {
+                    if (mode === "note" && !urlSessionId) {
+                      alert("You need to open this from a specific study session to chat with that note.");
+                      return;
+                    }
+                    setMode("general");
+                  }}
+                  className={`px-4 py-2 rounded-lg text-sm font-semibold transition-all ${
+                    mode === "general"
+                      ? 'bg-indigo-600 text-white shadow-md'
+                      : 'text-slate-600 hover:bg-white/50'
+                  }`}
+                >
+                  <MessageSquare className="w-4 h-4 inline-block mr-2" />
+                  General Chat
+                </button>
+                <button
+                  onClick={() => {
+                    if (!urlSessionId) {
+                      alert("You need to open this from a specific study session to chat with that note.");
+                      return;
+                    }
+                    setMode("note");
+                  }}
+                  className={`px-4 py-2 rounded-lg text-sm font-semibold transition-all ${
+                    mode === "note"
+                      ? 'bg-indigo-600 text-white shadow-md'
+                      : 'text-slate-600 hover:bg-white/50'
+                  }`}
+                >
+                  <BookOpen className="w-4 h-4 inline-block mr-2" />
+                  Chat with this Note
+                </button>
               </div>
-            )}
-            
-            {mode === "general" && (
-              <p className="text-sm text-slate-500 italic">
-                You are chatting with Notra for general questions.
-              </p>
-            )}
-            {mode === "note" && (
-              <p className="text-sm text-slate-500 italic">
-                You are chatting with Notra about this study session.
-              </p>
+              
+              {mode === "note" && sessionTitle && (
+                <div className="px-3 py-1 bg-indigo-50 border border-indigo-200 rounded-lg text-sm text-indigo-700">
+                  From: {sessionTitle}
+                </div>
+              )}
+            </div>
+
+            {/* Plan & Model Info */}
+            <div className="flex items-center gap-4 flex-wrap">
+              {userPlan === 'free' ? (
+                <p className="text-sm text-slate-600">
+                  Free plan – Using GPT-4o-mini. <NextLink href="/pricing" className="text-indigo-600 hover:underline">Upgrade</NextLink> to unlock GPT-4o & GPT-5.1.
+                </p>
+              ) : (
+                <p className="text-sm text-slate-600">
+                  Pro plan – You have access to GPT-4o & GPT-5.1.
+                </p>
+              )}
+              
+              {mode === "general" && (
+                <p className="text-sm text-slate-500 italic">
+                  You are chatting with Notra for general questions.
+                </p>
+              )}
+              {mode === "note" && (
+                <p className="text-sm text-slate-500 italic">
+                  You are chatting with Notra about this study session.
+                </p>
+              )}
+            </div>
+
+            {/* Pro Model Upgrade Hint */}
+            {showProModelHint && (
+              <div className="bg-indigo-50 border-l-4 border-indigo-500 p-4 rounded-lg animate-in slide-in-from-top-2">
+                <p className="text-sm text-indigo-900 mb-3">{proModelHintMessage}</p>
+                <div className="flex items-center gap-3">
+                  <NextLink
+                    href="/pricing"
+                    className="px-4 py-2 bg-indigo-600 text-white rounded-lg text-sm font-semibold hover:bg-indigo-700 transition-colors"
+                  >
+                    View Pro plans
+                  </NextLink>
+                  <button
+                    onClick={() => setShowProModelHint(false)}
+                    className="px-4 py-2 text-indigo-600 text-sm font-semibold hover:text-indigo-700 transition-colors"
+                  >
+                    Maybe later
+                  </button>
+                </div>
+              </div>
             )}
           </div>
         </header>

@@ -144,6 +144,24 @@ export default function UploadAudioPage() {
 
       if (!response.ok) {
         const errorData = await response.json().catch(() => ({ error: 'Upload failed' }));
+        
+        // Handle 429 limit reached
+        if (response.status === 429 && errorData.error === 'limit_reached') {
+          setError(`You've reached the free plan limit. ${errorData.message}`);
+          setIsUploading(false);
+          
+          // Show upgrade prompt
+          setTimeout(() => {
+            const shouldUpgrade = confirm(
+              `You've reached the free plan limit\n\n${errorData.message}\n\nWould you like to upgrade to Pro?`
+            );
+            if (shouldUpgrade) {
+              router.push('/pricing');
+            }
+          }, 500);
+          return;
+        }
+        
         throw new Error(errorData.error || 'Failed to process audio');
       }
 
