@@ -91,10 +91,17 @@ const SectionBadge = ({ children }: { children: React.ReactNode }) => (
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const [currentPath, setCurrentPath] = useState('');
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 20);
     window.addEventListener('scroll', handleScroll);
+    
+    // Get current path
+    if (typeof window !== 'undefined') {
+      setCurrentPath(window.location.pathname);
+    }
+    
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
@@ -103,7 +110,8 @@ const Navbar = () => {
     { label: 'Features', href: '/#features' },
     { label: 'Pricing', href: '/pricing' },
     { label: 'FAQ', href: '/#faq' },
-    { label: 'Notra AI', href: '/app' } // 新增入口
+    { label: 'Notra AI', href: '/app' },
+    { label: 'Dashboard', href: '/dashboard' }
   ];
 
   return (
@@ -143,15 +151,22 @@ const Navbar = () => {
 
           {/* Desktop Links */}
           <div className="hidden md:flex items-center space-x-10">
-            {navItems.map((item) => (
-              <Link 
-                key={item.label} 
-                href={item.href} 
-                className="text-sm font-medium text-slate-600 hover:text-indigo-600 transition-colors"
-              >
-                {item.label}
-              </Link>
-            ))}
+            {navItems.map((item) => {
+              const isActive = currentPath === item.href || (item.href.startsWith('/#') && currentPath === '/');
+              return (
+                <Link 
+                  key={item.label} 
+                  href={item.href} 
+                  className={`text-sm font-medium transition-colors ${
+                    isActive 
+                      ? 'text-indigo-600 border-b-2 border-indigo-600 pb-1' 
+                      : 'text-slate-600 hover:text-indigo-600'
+                  }`}
+                >
+                  {item.label}
+                </Link>
+              );
+            })}
           </div>
 
           {/* CTA (Actions) */}
@@ -177,16 +192,23 @@ const Navbar = () => {
       {isOpen && (
         <div className="md:hidden bg-white border-b border-slate-100 absolute w-full">
           <div className="px-4 pt-2 pb-6 space-y-2 shadow-xl">
-            {navItems.map((item) => (
-              <Link 
-                key={item.label} 
-                href={item.href} 
-                className="block px-4 py-3 text-base font-medium text-slate-700 hover:bg-slate-50 rounded-lg"
-                onClick={() => setIsOpen(false)}
-              >
-                {item.label}
-              </Link>
-            ))}
+            {navItems.map((item) => {
+              const isActive = currentPath === item.href || (item.href.startsWith('/#') && currentPath === '/');
+              return (
+                <Link 
+                  key={item.label} 
+                  href={item.href} 
+                  className={`block px-4 py-3 text-base font-medium rounded-lg transition-colors ${
+                    isActive
+                      ? 'text-indigo-600 bg-indigo-50'
+                      : 'text-slate-700 hover:bg-slate-50'
+                  }`}
+                  onClick={() => setIsOpen(false)}
+                >
+                  {item.label}
+                </Link>
+              );
+            })}
             <div className="pt-4 border-t border-slate-100 flex flex-col gap-3">
               <Link href="/chat">
                 <Button variant="secondary" className="w-full justify-center">Log in</Button>
@@ -236,10 +258,10 @@ const Hero = () => {
           </p>
           
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-20">
-            {/* Primary Action: Try Notra AI */}
-            <Link href="/app">
+            {/* Primary Action: Go to Dashboard */}
+            <Link href="/dashboard">
               <Button variant="gradient" icon={Sparkles} className="w-full sm:w-auto h-14 px-10 text-base shadow-indigo-500/25">
-                👉 Try Notra AI →
+                Go to Dashboard
               </Button>
             </Link>
             
