@@ -564,6 +564,17 @@ const Footer = () => (
 // --- Main Layout ---
 
 export default function LandingPage() {
+  // Check onboarding status on mount
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const onboarded = localStorage.getItem('notra_onboarded');
+      if (onboarded !== 'true') {
+        // Redirect to onboarding if not completed
+        window.location.href = '/onboarding';
+      }
+    }
+  }, []);
+
   return (
     <div className="min-h-screen bg-[#FDFCFE] font-sans selection:bg-indigo-100 selection:text-indigo-900 overflow-x-hidden">
       <Navbar />

@@ -13,6 +13,17 @@ import {
 } from "./chat-ui";
 
 export default function NotraConsole() {
+  // Check onboarding status on mount
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const onboarded = localStorage.getItem('notra_onboarded');
+      if (onboarded !== 'true') {
+        // Redirect to onboarding if not completed
+        window.location.href = '/onboarding';
+      }
+    }
+  }, []);
+
   // --- State ---
   const welcomeMsg: ChatMessage = { id: 'welcome', role: "assistant", content: "👋 Hey! I'm Notra, your AI study companion. I help you turn lectures, notes, and study materials into organized knowledge.\n\n**What I can do:**\n\n📝 **Summarize lectures**  \nUpload audio recordings from class\n\n📄 **Organize notes**  \nUpload PDFs, slides, or documents\n\n🎥 **Extract key points**  \nPaste YouTube video links for automatic summaries\n\n📊 **Create study materials**  \nGenerate flashcards, summaries, and concept maps\n\n🔍 **Answer questions**  \nAsk me anything about your uploaded materials\n\n---\n\nTry uploading a lecture recording, a PDF, or paste a video link to get started! 🚀", type: 'text' };
   

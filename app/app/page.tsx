@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { useEffect } from 'react';
 
 // ---------------------------------------------------------
 // 🔧 修复：使用自定义 Link 组件替代 next/link 以适应预览环境
@@ -14,6 +14,17 @@ const Link = ({ href, children, className, ...props }: any) => {
 };
 
 export default function NotraApp() {
+  // Check onboarding status on mount
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const onboarded = localStorage.getItem('notra_onboarded');
+      if (onboarded !== 'true') {
+        // Redirect to onboarding if not completed
+        window.location.href = '/onboarding';
+      }
+    }
+  }, []);
+
   return (
     <div className="flex items-center justify-center min-h-screen bg-slate-50">
       <div className="text-center p-8 bg-white rounded-2xl shadow-sm border border-slate-100 max-w-md w-full">
