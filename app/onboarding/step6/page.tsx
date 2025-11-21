@@ -58,9 +58,9 @@ export default function OnboardingStep6() {
                 }}
               >
                 <div className="text-center">
-                  <div className="text-6xl mb-6">🌱</div>
+                  <div className="text-6xl mb-6">📐</div>
                   <h2 className="text-4xl font-bold text-slate-900">
-                    Photosynthesis
+                    Limit Definition of Derivative
                   </h2>
                   {!isFlipped && (
                     <p className="text-slate-500 mt-4">Tap to flip</p>
@@ -82,9 +82,10 @@ export default function OnboardingStep6() {
                     Definition:
                   </h3>
                   <p className="text-lg text-slate-700 leading-relaxed">
-                    The process by which plants and other organisms use sunlight to synthesize 
-                    foods with the help of chlorophyll pigments. During photosynthesis, plants 
-                    convert carbon dioxide and water into glucose and release oxygen as a byproduct.
+                    The derivative of a function f(x) at a point x is defined as the limit of the 
+                    difference quotient as h approaches zero: <span className="font-mono">f'(x) = lim(h→0) [f(x+h) - f(x)]/h</span>. 
+                    This limit represents the instantaneous rate of change of the function at that point, 
+                    which geometrically corresponds to the slope of the tangent line to the curve.
                   </p>
                 </div>
               </div>

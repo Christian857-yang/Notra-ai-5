@@ -18,13 +18,13 @@ export default function OnboardingStep5() {
   }, []);
 
   const options = [
-    'Energy production (ATP synthesis)',
-    'Protein synthesis',
-    'DNA replication',
-    'Waste removal'
+    '2x',
+    'x',
+    '2',
+    'None of the above'
   ];
 
-  const correctAnswer = 0; // First option is correct
+  const correctAnswer = 0; // First option (2x) is correct
 
   const handleAnswerClick = (index: number) => {
     if (selectedAnswer !== null) return; // Prevent multiple clicks
@@ -61,7 +61,7 @@ export default function OnboardingStep5() {
         {/* Question Card */}
         <div className="bg-white rounded-3xl shadow-2xl p-8 md:p-12 mb-6">
           <h2 className="text-2xl md:text-3xl font-bold text-slate-900 mb-8">
-            What is the primary function of mitochondria in a cell?
+            What is the derivative of <span className="font-mono">f(x) = x²</span>?
           </h2>
 
           <div className="space-y-4">

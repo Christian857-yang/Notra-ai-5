@@ -33,48 +33,52 @@ export default function OnboardingStep2() {
     e.preventDefault();
     setIsDragging(false);
     
-    const file = e.dataTransfer.files[0];
-    if (file) {
-      handleFileUpload(file);
+    // Check if this is the sample file being dragged
+    const draggedElement = e.dataTransfer.getData('text/plain');
+    if (draggedElement === 'sample-calculus-file') {
+      // This is the sample file - allow it
+      handleSampleFileUpload();
+    } else {
+      // User tried to drop their own file - ignore it
+      // Show a message or just do nothing
+      return;
     }
   };
 
+  // Disable file input - users cannot upload their own files
   const handleFileInput = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      handleFileUpload(file);
+    // Prevent user file uploads
+    e.preventDefault();
+    if (fileInputRef.current) {
+      fileInputRef.current.value = '';
     }
   };
 
-  const handleFileUpload = (file: File) => {
-    setUploadedFile(file);
+  const handleSampleFileUpload = () => {
     // Store file info temporarily (client-side only)
     if (typeof window !== 'undefined') {
-      localStorage.setItem('onboarding_file_name', file.name);
-      localStorage.setItem('onboarding_file_type', file.type);
+      localStorage.setItem('onboarding_file_name', 'Calculus Chapter 3.pdf');
+      localStorage.setItem('onboarding_file_type', 'application/pdf');
     }
     
-    // Navigate to Step 3 after a brief delay
-    setTimeout(() => {
-      window.location.href = '/onboarding/step3';
-    }, 500);
+    // Navigate to Step 3 immediately
+    window.location.href = '/onboarding/step3';
   };
 
   const handleSampleDragStart = (e: React.DragEvent) => {
     setIsDraggingSample(true);
     e.dataTransfer.effectAllowed = 'move';
+    // Mark this as the sample file
+    e.dataTransfer.setData('text/plain', 'sample-calculus-file');
   };
 
   const handleSampleDragEnd = () => {
     setIsDraggingSample(false);
   };
 
-  const handleSampleDrop = (e: React.DragEvent) => {
-    e.preventDefault();
-    setIsDraggingSample(false);
-    // Simulate file upload for sample
-    const mockFile = new File([''], 'Calculus Chapter 3.pdf', { type: 'application/pdf' });
-    handleFileUpload(mockFile);
+  const handleSampleClick = () => {
+    // Allow clicking the sample file to upload it
+    handleSampleFileUpload();
   };
 
   return (
@@ -101,13 +105,12 @@ export default function OnboardingStep2() {
           onDragOver={handleDragOver}
           onDragLeave={handleDragLeave}
           onDrop={handleDrop}
-          onClick={() => fileInputRef.current?.click()}
           className={`
-            relative border-2 border-dashed rounded-3xl p-16 text-center cursor-pointer
+            relative border-2 border-dashed rounded-3xl p-16 text-center
             transition-all duration-300 mb-8
             ${isDragging 
               ? 'border-[#9F6BFF] bg-[#9F6BFF]/10 shadow-xl scale-105' 
-              : 'border-slate-300 hover:border-[#9F6BFF]/50 hover:bg-white/50 bg-white/30'
+              : 'border-slate-300 bg-white/30'
             }
           `}
         >
@@ -116,7 +119,7 @@ export default function OnboardingStep2() {
             type="file"
             className="hidden"
             onChange={handleFileInput}
-            accept=".pdf,.doc,.docx,.txt,.mp4,.mp3,.wav,.webm,.m4a"
+            disabled
           />
           
           <div className="flex flex-col items-center gap-4">
@@ -128,10 +131,10 @@ export default function OnboardingStep2() {
               <Upload className="w-10 h-10" />
             </div>
             <p className="text-2xl font-semibold text-slate-700">
-              Drop here
+              Drop the sample file here
             </p>
             <p className="text-slate-500">
-              or click to browse
+              Drag the Calculus Chapter 3 file below
             </p>
           </div>
         </div>
@@ -146,14 +149,13 @@ export default function OnboardingStep2() {
             draggable
             onDragStart={handleSampleDragStart}
             onDragEnd={handleSampleDragEnd}
-            onDrop={handleSampleDrop}
-            onDragOver={(e) => e.preventDefault()}
+            onClick={handleSampleClick}
             className={`
               bg-white rounded-2xl p-6 border-2 border-slate-200 cursor-move
               transition-all duration-300
               ${isDraggingSample 
                 ? 'opacity-50 scale-95' 
-                : 'hover:border-[#9F6BFF]/50 hover:shadow-lg'
+                : 'hover:border-[#9F6BFF]/50 hover:shadow-lg hover:scale-105'
               }
             `}
           >
@@ -170,7 +172,7 @@ export default function OnboardingStep2() {
                 </p>
               </div>
               <div className="text-slate-400 text-sm">
-                Drag me ↑
+                Drag me ↑ or click
               </div>
             </div>
           </div>

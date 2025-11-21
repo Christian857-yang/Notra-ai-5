@@ -18,8 +18,8 @@ export default function OnboardingStep7() {
     // Set onboarding as complete
     if (typeof window !== 'undefined') {
       localStorage.setItem('onboarding_complete', 'true');
-      // Navigate to sign-up or auth route (you can change this to your actual route)
-      window.location.href = '/chat'; // Using /chat as the sign-up destination for now
+      // Navigate to homepage after signup
+      window.location.href = '/';
     }
   };
 

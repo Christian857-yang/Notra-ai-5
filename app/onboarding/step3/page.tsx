@@ -56,7 +56,7 @@ export default function OnboardingStep3() {
         </div>
 
         <p className="text-xl text-slate-600">
-          Processing your lecture...
+          Processing your Calculus lecture...
         </p>
       </div>
     </div>
