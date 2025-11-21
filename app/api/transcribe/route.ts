@@ -41,7 +41,7 @@ export async function POST(req: Request) {
       // 不强制指定语言，让Whisper自动检测（支持多语言）
       prompt: "This is a lecture, educational content, or video audio. Please transcribe accurately with proper punctuation and capitalization.", // 提示词帮助提高质量
       temperature: 0, // 降低随机性，提高一致性
-      response_format: "text", // 明确指定返回格式
+      // 不指定 response_format，默认返回对象格式
     });
 
     // 清理临时文件
@@ -52,7 +52,8 @@ export async function POST(req: Request) {
     }
 
     // transcription 返回的是对象，包含 text 属性
-    return NextResponse.json({ text: transcription.text });
+    const transcriptionText = typeof transcription === 'string' ? transcription : transcription.text;
+    return NextResponse.json({ text: transcriptionText });
   } catch (error: any) {
     console.error("Transcription error:", error);
     return NextResponse.json({ error: error.message || "Error processing audio" }, { status: 500 });
