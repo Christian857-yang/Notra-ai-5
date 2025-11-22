@@ -59,8 +59,8 @@ export default function OnboardingStep7() {
     // Set onboarding as complete
     if (typeof window !== 'undefined') {
       localStorage.setItem('onboarding_complete', 'true');
-      // Navigate to homepage after signup
-      window.location.href = '/';
+      // Navigate to signup page (not homepage)
+      window.location.href = '/signup';
     }
   };
 

@@ -67,10 +67,10 @@ export interface ProcessResult {
 
 // Onboarding types
 export type OnboardingRole =
-  | "high-school"
-  | "undergrad"
+  | "middle_school"
+  | "undergraduate"
   | "graduate"
-  | "professional"
+  | "working_professional"
   | "educator"
   | "other";
 

@@ -2,9 +2,9 @@
 import { OnboardingSampleBundle, NoteSection, QuizItem, Flashcard, OnboardingRole } from '@/types/notra';
 
 export const ONBOARDING_SAMPLES: OnboardingSampleBundle[] = [
-  // High School - Basic Calculus
+  // Middle School - Basic Calculus
   {
-    role: "high-school",
+    role: "middle_school",
     file: {
       id: "sample-highschool-1",
       title: "Calculus Chapter 3: Derivatives",
@@ -136,7 +136,7 @@ export const ONBOARDING_SAMPLES: OnboardingSampleBundle[] = [
   },
   // Undergraduate - Linear Algebra
   {
-    role: "undergrad",
+    role: "undergraduate",
     file: {
       id: "sample-undergrad-1",
       title: "Linear Algebra: Eigenvalues & Eigenvectors",
@@ -431,7 +431,7 @@ export const ONBOARDING_SAMPLES: OnboardingSampleBundle[] = [
   },
   // Professional - Business Report
   {
-    role: "professional",
+    role: "working_professional",
     file: {
       id: "sample-professional-1",
       title: "Q2 Sales Report – TechCorp",
