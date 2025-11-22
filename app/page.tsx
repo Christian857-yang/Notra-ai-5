@@ -321,15 +321,14 @@ const Hero = () => {
 };
 
 const SocialProof = () => (
-  <div className="bg-white border-y border-slate-100">
+  <div className="bg-[#0B0C15] border-y border-white/5">
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-      <p className="text-center text-sm font-semibold text-slate-400 uppercase tracking-widest mb-10">
+      <p className="text-center text-sm font-semibold text-slate-500 uppercase tracking-widest mb-10">
         Trusted by 50,000+ students from top universities worldwide
       </p>
-      <div className="flex flex-wrap justify-center gap-12 opacity-60 grayscale hover:grayscale-0 transition-all duration-500">
-         {/* University Names */}
+      <div className="flex flex-wrap justify-center gap-12 opacity-40 grayscale hover:grayscale-0 hover:opacity-80 transition-all duration-500">
          {['Stanford', 'MIT', 'Oxford', 'Cambridge', 'NUS', 'Toronto'].map(uni => (
-           <span key={uni} className="text-xl font-serif font-bold text-slate-800">{uni}</span>
+           <span key={uni} className="text-xl font-serif font-bold text-slate-300">{uni}</span>
          ))}
       </div>
     </div>
@@ -354,6 +353,15 @@ const Features = () => {
       bullets: ["OCR for Scanned Docs", "Formula Extraction", "Auto-Flashcard Generation"],
       image: "https://images.unsplash.com/photo-1434030216411-0b793f4b4173?q=80&w=2940&auto=format&fit=crop"
     },
+    // Batch 5: New Video Analysis Feature
+    {
+      title: "Turn videos into notes",
+      subtitle: "Video Analysis",
+      desc: "Paste a video link from platforms like YouTube, Bilibili or classroom recordings, and Notra will generate summaries, key concepts, quizzes and flashcards from the content.",
+      icon: Video,
+      bullets: ["YouTube & Bilibili Support", "Key Moment Extraction", "Auto-generated Quizzes"],
+      image: "https://images.unsplash.com/photo-1611162617474-5b21e879e113?q=80&w=2874&auto=format&fit=crop"
+    },
     {
       title: "Context-Aware Tutor",
       subtitle: "Interactive Learning",
@@ -365,13 +373,13 @@ const Features = () => {
   ];
 
   return (
-    <section id="features" className="py-32 bg-[#FDFCFE]">
+    <section id="features" className="py-32 bg-[#0F111A]"> {/* Darker bg for section distinction */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-24">
           <SectionBadge>Core Capabilities</SectionBadge>
-          <h2 className="text-4xl md:text-5xl font-bold text-slate-900 mb-6">
+          <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">
              Not just a tool. <br/>
-             Your academic <span className="text-indigo-600">second brain.</span>
+             Your academic <span className="text-indigo-400">second brain.</span>
           </h2>
         </div>
 
@@ -382,40 +390,40 @@ const Features = () => {
                 
                 {/* Text Content */}
                 <div className="flex-1 space-y-8">
-                  <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-indigo-50 text-indigo-600 shadow-sm">
+                  <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-indigo-500/10 text-indigo-400 border border-indigo-500/20 shadow-sm">
                     <feature.icon size={28} />
                   </div>
                   
                   <div>
-                    <p className="text-sm font-bold text-indigo-600 mb-2 uppercase tracking-wider">{feature.subtitle}</p>
-                    <h3 className="text-3xl font-bold text-slate-900">{feature.title}</h3>
+                    <p className="text-sm font-bold text-indigo-400 mb-2 uppercase tracking-wider">{feature.subtitle}</p>
+                    <h3 className="text-3xl font-bold text-white">{feature.title}</h3>
                   </div>
 
-                  <p className="text-lg text-slate-600 leading-relaxed">
+                  <p className="text-lg text-slate-400 leading-relaxed">
                     {feature.desc}
                   </p>
                   
                   <ul className="space-y-4 pt-4">
                     {feature.bullets.map((bullet, bIdx) => (
-                      <li key={bIdx} className="flex items-center bg-white p-3 rounded-lg border border-slate-100 shadow-sm w-fit">
-                        <div className="w-6 h-6 rounded-full bg-green-100 flex items-center justify-center mr-3 flex-shrink-0">
-                           <Check size={14} className="text-green-600" />
+                      <li key={bIdx} className="flex items-center bg-white/5 p-3 rounded-lg border border-white/5 shadow-sm w-fit">
+                        <div className="w-6 h-6 rounded-full bg-green-500/20 flex items-center justify-center mr-3 flex-shrink-0">
+                           <Check size={14} className="text-green-400" />
                         </div>
-                        <span className="text-slate-700 font-medium">{bullet}</span>
+                        <span className="text-slate-300 font-medium">{bullet}</span>
                       </li>
                     ))}
                   </ul>
                 </div>
 
-                {/* Realistic Image Card */}
+                {/* Image Card */}
                 <div className="flex-1 w-full">
-                  <div className="relative rounded-3xl overflow-hidden shadow-2xl ring-1 ring-slate-900/5 group aspect-[4/3]">
+                  <div className="relative rounded-3xl overflow-hidden shadow-2xl ring-1 ring-white/10 group aspect-[4/3]">
                      <img 
                        src={feature.image} 
                        alt={feature.title} 
-                       className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                       className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105 opacity-80 group-hover:opacity-100"
                      />
-                     <div className="absolute inset-0 bg-indigo-900/10 group-hover:bg-transparent transition-colors duration-500"></div>
+                     <div className="absolute inset-0 bg-indigo-900/20 group-hover:bg-transparent transition-colors duration-500"></div>
                   </div>
                 </div>
 
@@ -437,21 +445,22 @@ const BenefitsGrid = () => {
   ];
 
   return (
-    <section className="py-32 bg-slate-900 text-white relative overflow-hidden">
-      <div className="absolute top-0 left-0 w-full h-full overflow-hidden z-0 opacity-20">
+    <section className="py-32 bg-[#0B0C15] relative overflow-hidden">
+      {/* Background Orbs for Benefits */}
+      <div className="absolute top-0 left-0 w-full h-full overflow-hidden z-0 opacity-10 pointer-events-none">
         <div className="absolute top-[-20%] right-[-10%] w-[800px] h-[800px] bg-blue-600 rounded-full blur-[120px]"></div>
         <div className="absolute bottom-[-20%] left-[-10%] w-[600px] h-[600px] bg-indigo-600 rounded-full blur-[120px]"></div>
       </div>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         <div className="text-center mb-20">
-           <h2 className="text-3xl md:text-4xl font-bold mb-6">Why top students choose Notra</h2>
+           <h2 className="text-3xl md:text-4xl font-bold text-white mb-6">Why top students choose Notra</h2>
            <p className="text-slate-400 max-w-2xl mx-auto text-lg">Everything you need to excel in your studies, minus the busywork.</p>
         </div>
         <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
           {cards.map((card, idx) => (
             <FadeIn key={idx} delay={idx * 100}>
-              <div className="bg-slate-800/50 backdrop-blur-lg p-8 rounded-2xl border border-slate-700 hover:border-indigo-500 transition-colors duration-300 h-full">
+              <div className="bg-white/5 backdrop-blur-lg p-8 rounded-2xl border border-white/10 hover:border-indigo-500/50 transition-colors duration-300 h-full">
                  <div className="w-12 h-12 rounded-xl bg-indigo-500/20 flex items-center justify-center text-indigo-300 mb-6">
                    <card.icon size={24} />
                  </div>
@@ -467,26 +476,26 @@ const BenefitsGrid = () => {
 };
 
 const HowItWorks = () => (
-  <section className="py-32 bg-[#FDFCFE]">
+  <section className="py-32 bg-[#0F111A]">
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       <div className="text-center mb-20">
         <SectionBadge>Workflow</SectionBadge>
-        <h2 className="text-4xl font-bold text-slate-900 mb-6">From material to mastery</h2>
+        <h2 className="text-4xl font-bold text-white mb-6">From material to mastery</h2>
       </div>
       <div className="grid md:grid-cols-3 gap-12 relative">
-        <div className="hidden md:block absolute top-12 left-[20%] right-[20%] h-0.5 bg-gradient-to-r from-slate-200 via-indigo-200 to-slate-200 -z-10"></div>
+        <div className="hidden md:block absolute top-12 left-[20%] right-[20%] h-0.5 bg-gradient-to-r from-slate-800 via-indigo-900 to-slate-800 -z-10"></div>
         {[
           { step: "01", title: "Upload or Record", desc: "Drop your lecture slides, PDFs, or start recording in the classroom." },
           { step: "02", title: "AI Processing", desc: "Select your preferred model. Notra deconstructs the content into key concepts." },
           { step: "03", title: "Master & Review", desc: "Receive structured notes, take quizzes, and chat with your materials." },
         ].map((item, idx) => (
           <FadeIn key={idx} delay={idx * 200}>
-            <div className="relative bg-[#FDFCFE] group">
-               <div className="w-24 h-24 mx-auto bg-white border-4 border-indigo-50 rounded-full flex items-center justify-center text-2xl font-bold text-indigo-600 mb-8 shadow-lg group-hover:scale-110 transition-transform duration-300">
+            <div className="relative bg-[#0F111A] group p-4">
+               <div className="w-24 h-24 mx-auto bg-[#0B0C15] border-4 border-indigo-900/50 rounded-full flex items-center justify-center text-2xl font-bold text-indigo-400 mb-8 shadow-lg group-hover:scale-110 group-hover:border-indigo-500/50 transition-transform duration-300">
                  {item.step}
                </div>
-               <h3 className="text-xl font-bold text-slate-900 mb-4 text-center">{item.title}</h3>
-               <p className="text-slate-600 text-center leading-relaxed">{item.desc}</p>
+               <h3 className="text-xl font-bold text-white mb-4 text-center">{item.title}</h3>
+               <p className="text-slate-400 text-center leading-relaxed">{item.desc}</p>
             </div>
           </FadeIn>
         ))}
@@ -496,21 +505,21 @@ const HowItWorks = () => (
 );
 
 const FAQ = () => (
-  <section id="faq" className="py-24 bg-white border-t border-slate-100">
+  <section id="faq" className="py-24 bg-[#0B0C15] border-t border-white/5">
     <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
-      <h2 className="text-3xl font-bold text-slate-900 mb-12 text-center">Frequently Asked Questions</h2>
+      <h2 className="text-3xl font-bold text-white mb-12 text-center">Frequently Asked Questions</h2>
       <div className="space-y-4">
         {[
           { q: "Is Notra free to use?", a: "Yes, we offer a generous Free Plan that includes daily access to GPT-4o-mini and essential note-taking features." },
-          { q: "Which languages are supported for recording?", a: "We support mixed recognition for over 30+ languages including English, Mandarin, Japanese, and Spanish. Perfect for international students." },
+          { q: "Which languages are supported?", a: "We support mixed recognition for over 30+ languages including English, Mandarin, Japanese, and Spanish. Perfect for international students." },
           { q: "How is this different from ChatGPT?", a: "ChatGPT is a generalist. Notra is purpose-built for structured knowledge. We integrate long-context document parsing, OCR, and specialized academic prompts that general chatbots lack." },
         ].map((item, idx) => (
-          <div key={idx} className="bg-slate-50 rounded-2xl border border-slate-200 overflow-hidden hover:border-indigo-200 transition-colors">
+          <div key={idx} className="bg-white/5 rounded-2xl border border-white/10 overflow-hidden hover:border-indigo-500/30 transition-colors">
             <button className="w-full flex justify-between items-center p-6 text-left focus:outline-none group">
-              <span className="font-bold text-slate-900 group-hover:text-indigo-700 transition-colors">{item.q}</span>
-              <ChevronDown size={20} className="text-slate-400 group-hover:text-indigo-500" />
+              <span className="font-bold text-slate-200 group-hover:text-indigo-300 transition-colors">{item.q}</span>
+              <ChevronDown size={20} className="text-slate-500 group-hover:text-indigo-400" />
             </button>
-            <div className="px-6 pb-6 text-slate-600 leading-relaxed">
+            <div className="px-6 pb-6 text-slate-400 leading-relaxed">
               {item.a}
             </div>
           </div>
@@ -521,7 +530,7 @@ const FAQ = () => (
 );
 
 const Footer = () => (
-  <footer className="bg-slate-900 text-slate-300 py-16 border-t border-slate-800">
+  <footer className="bg-[#050508] text-slate-400 py-16 border-t border-white/5">
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       <div className="grid md:grid-cols-4 gap-12 mb-16">
         <div className="col-span-1 md:col-span-1">
@@ -529,16 +538,17 @@ const Footer = () => (
              <div className="relative flex h-8 w-8 items-center justify-center">
                <NotraLogo size="sm" />
              </div>
-             <span className="text-xl font-bold text-white tracking-tight group-hover:text-blue-300 transition-colors">Notra</span>
+             <span className="text-xl font-bold text-white tracking-tight group-hover:text-indigo-400 transition-colors">Notra</span>
           </Link>
-          <p className="text-slate-400 mb-6 leading-relaxed">
+          <p className="text-slate-500 mb-6 leading-relaxed">
             Notes for a New Era. <br/>
             Your intelligent learning companion for the future of education.
           </p>
+          {/* Social Icons Placeholders */}
           <div className="flex gap-4">
-             <div className="w-8 h-8 bg-slate-800 rounded-full hover:bg-indigo-600 transition-colors cursor-pointer"></div>
-             <div className="w-8 h-8 bg-slate-800 rounded-full hover:bg-indigo-600 transition-colors cursor-pointer"></div>
-             <div className="w-8 h-8 bg-slate-800 rounded-full hover:bg-indigo-600 transition-colors cursor-pointer"></div>
+             <div className="w-8 h-8 bg-white/10 rounded-full hover:bg-indigo-600 transition-colors cursor-pointer"></div>
+             <div className="w-8 h-8 bg-white/10 rounded-full hover:bg-indigo-600 transition-colors cursor-pointer"></div>
+             <div className="w-8 h-8 bg-white/10 rounded-full hover:bg-indigo-600 transition-colors cursor-pointer"></div>
           </div>
         </div>
         
@@ -551,15 +561,15 @@ const Footer = () => (
              <h4 className="font-bold text-white mb-6">{col.title}</h4>
              <ul className="space-y-4">
                {col.links.map((link, lIdx) => (
-                 <li key={lIdx}><Link href="#" className="text-slate-400 hover:text-indigo-400 transition-colors">{link}</Link></li>
+                 <li key={lIdx}><Link href="#" className="text-slate-500 hover:text-indigo-400 transition-colors">{link}</Link></li>
                ))}
              </ul>
            </div>
         ))}
       </div>
       
-      <div className="border-t border-slate-800 pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
-        <div className="text-sm text-slate-500">© 2025 NotraStudio. All rights reserved.</div>
+      <div className="border-t border-white/5 pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
+        <div className="text-sm text-slate-600">© 2025 NotraStudio. All rights reserved.</div>
         <div className="flex gap-6">
            <Link href="/app">
              <Button variant="gradient" className="px-6 h-10 text-sm">Start Learning Free</Button>
@@ -585,7 +595,7 @@ export default function LandingPage() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-[#FDFCFE] font-sans selection:bg-indigo-100 selection:text-indigo-900 overflow-x-hidden">
+    <div className="min-h-screen bg-[#0B0C15] font-sans selection:bg-indigo-500/30 selection:text-indigo-200 overflow-x-hidden">
       <Navbar />
       <main>
         <Hero />
