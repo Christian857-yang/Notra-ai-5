@@ -49,12 +49,7 @@ export default function SignupPage() {
         {/* Logo and Title */}
         <div className="text-center mb-8">
           <Link href="/" className="inline-flex items-center cursor-pointer group mb-6">
-            <div className="mr-3">
-              <NotraLogo size="lg" />
-            </div>
-            <span className="text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-slate-900 to-slate-700 tracking-tight group-hover:from-blue-600 group-hover:to-indigo-600 transition-all duration-300">
-              Notra
-            </span>
+            <NotraLogo size="lg" showText={true} variant="minimal" />
           </Link>
           <h1 className="text-4xl md:text-5xl font-bold text-slate-900 mb-2">
             Create your account

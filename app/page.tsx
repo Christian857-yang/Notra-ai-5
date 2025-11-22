@@ -127,12 +127,7 @@ const Navbar = () => {
         <div className="flex justify-between items-center h-20">
           <div className="flex flex-col items-start">
             <Link href="/" className="flex items-center cursor-pointer group">
-              <div className="mr-3">
-                <NotraLogo size="sm" />
-              </div>
-              <span className="text-2xl font-bold text-white tracking-tight group-hover:text-indigo-300 transition-all duration-300">
-                Notra
-              </span>
+              <NotraLogo size="sm" showText={true} variant="default" />
             </Link>
             <div className="mt-1 ml-12">
               <WelcomeUser />
@@ -535,10 +530,7 @@ const Footer = () => (
       <div className="grid md:grid-cols-4 gap-12 mb-16">
         <div className="col-span-1 md:col-span-1">
           <Link href="/" className="flex items-center gap-2.5 mb-6 group">
-             <div className="relative flex h-8 w-8 items-center justify-center">
-               <NotraLogo size="sm" />
-             </div>
-             <span className="text-xl font-bold text-white tracking-tight group-hover:text-indigo-400 transition-colors">Notra</span>
+            <NotraLogo size="sm" showText={true} variant="minimal" />
           </Link>
           <p className="text-slate-500 mb-6 leading-relaxed">
             Notes for a New Era. <br/>

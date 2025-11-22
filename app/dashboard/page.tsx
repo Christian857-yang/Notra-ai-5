@@ -251,10 +251,7 @@ export default function Dashboard() {
             {/* Logo */}
             <div className="mb-8">
               <div className="flex items-center gap-3 mb-6">
-                <NotraLogo size="md" />
-                <span className="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-slate-900 to-slate-700">
-                  Notra
-                </span>
+                <NotraLogo size="md" showText={true} variant="minimal" />
               </div>
             </div>
 

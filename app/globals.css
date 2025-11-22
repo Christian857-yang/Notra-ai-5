@@ -162,3 +162,24 @@ body {
   text-shadow: 0 0 20px rgba(99, 102, 241, 0.3), 0 0 40px rgba(99, 102, 241, 0.1);
 }
 
+/* Logo Animations */
+@keyframes logo-float-glow {
+  0%, 100% { 
+    transform: rotate(-6deg) translateY(0);
+    filter: drop-shadow(0 0 8px rgba(99, 102, 241, 0.4)) drop-shadow(0 0 16px rgba(139, 92, 246, 0.2));
+  }
+  50% { 
+    transform: rotate(-4deg) translateY(-2px);
+    filter: drop-shadow(0 0 12px rgba(99, 102, 241, 0.6)) drop-shadow(0 0 24px rgba(139, 92, 246, 0.3));
+  }
+}
+
+@keyframes logo-subtle-glow {
+  0%, 100% { 
+    filter: drop-shadow(0 0 4px rgba(99, 102, 241, 0.3));
+  }
+  50% { 
+    filter: drop-shadow(0 0 6px rgba(99, 102, 241, 0.5));
+  }
+}
+

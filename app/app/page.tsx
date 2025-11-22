@@ -30,7 +30,7 @@ export default function NotraApp() {
     <div className="flex items-center justify-center min-h-screen bg-slate-50">
       <div className="text-center p-8 bg-white rounded-2xl shadow-sm border border-slate-100 max-w-md w-full">
         <div className="flex justify-center mb-6">
-          <NotraLogo size="xl" />
+          <NotraLogo size="xl" showText={true} variant="minimal" />
         </div>
         <h1 className="text-2xl font-bold text-slate-900 mb-2">Welcome to Notra AI</h1>
         <p className="text-slate-500 mb-8 leading-relaxed">

@@ -46,13 +46,27 @@ export const Link = ({ href, children, className, ...props }: any) => {
 import NotraLogoComponent from '@/components/NotraLogo';
 
 // Re-export with size mapping for backward compatibility
-export const NotraLogo = ({ size = "default" }: { size?: "default" | "small" | "large" }) => {
+export const NotraLogo = ({ 
+  size = "default", 
+  showText = false,
+  variant = "minimal"
+}: { 
+  size?: "default" | "small" | "large" | "xs" | "sm" | "md" | "lg" | "xl" | "2xl";
+  showText?: boolean;
+  variant?: "default" | "hero" | "minimal";
+}) => {
   const sizeMap: Record<"default" | "small" | "large", "xs" | "sm" | "md" | "lg" | "xl" | "2xl"> = {
     small: "sm",
     default: "md",
     large: "lg"
   };
-  return <NotraLogoComponent size={sizeMap[size]} />;
+  
+  // 如果传入的是新格式的 size，直接使用；否则使用映射
+  const finalSize = (size === "xs" || size === "sm" || size === "md" || size === "lg" || size === "xl" || size === "2xl") 
+    ? size 
+    : sizeMap[size as "default" | "small" | "large"];
+    
+  return <NotraLogoComponent size={finalSize} showText={showText} variant={variant} />;
 };
 
 // 3. Chart Renderer

@@ -65,12 +65,7 @@ export default function OnboardingStep1() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-20">
             <Link href="/" className="flex items-center cursor-pointer group">
-              <div className="mr-3">
-                <NotraLogo size="sm" />
-              </div>
-              <span className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-slate-900 to-slate-700 tracking-tight group-hover:from-blue-600 group-hover:to-indigo-600 transition-all duration-300">
-                Notra
-              </span>
+              <NotraLogo size="sm" showText={true} variant="minimal" />
             </Link>
           </div>
         </div>

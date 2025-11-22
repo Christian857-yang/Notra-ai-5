@@ -615,8 +615,7 @@ function NotraConsoleContent() {
              </button>
              <div className="flex flex-col">
                <div className="flex items-center gap-2">
-                 <NotraLogo />
-                 <h2 className="text-lg font-bold text-slate-900">Notra AI</h2>
+                 <NotraLogo size="sm" showText={true} variant="minimal" />
                </div>
              </div>
            </div>

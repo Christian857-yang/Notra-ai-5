@@ -1,11 +1,19 @@
 import React from 'react';
+import Image from 'next/image';
 
 interface NotraLogoProps {
   className?: string;
   size?: "xs" | "sm" | "md" | "lg" | "xl" | "2xl";
+  showText?: boolean; // 是否显示 "Notra" 文本
+  variant?: "default" | "hero" | "minimal"; // 不同场景的样式变体
 }
 
-export default function NotraLogo({ className = "", size = "md" }: NotraLogoProps) {
+export default function NotraLogo({ 
+  className = "", 
+  size = "md",
+  showText = false,
+  variant = "default"
+}: NotraLogoProps) {
   const sizeClasses = {
     xs: "w-6 h-6",
     sm: "w-8 h-8",
@@ -15,82 +23,108 @@ export default function NotraLogo({ className = "", size = "md" }: NotraLogoProp
     "2xl": "w-24 h-24"
   };
 
+  const textSizeClasses = {
+    xs: "text-xs",
+    sm: "text-sm",
+    md: "text-base",
+    lg: "text-lg",
+    xl: "text-xl",
+    "2xl": "text-2xl"
+  };
+
+  // 不同场景的动画和效果
+  const variantStyles = {
+    default: {
+      animation: variant === "hero" ? "logo-float-glow 5s ease-in-out infinite" : "logo-subtle-glow 4s ease-in-out infinite",
+      glow: variant === "hero" ? "drop-shadow-[0_0_8px_rgba(99,102,241,0.4)] drop-shadow-[0_0_16px_rgba(139,92,246,0.2)]" : "drop-shadow-[0_0_4px_rgba(99,102,241,0.3)]",
+      transform: variant === "hero" ? "rotate(-6deg)" : "rotate(-3deg)",
+    },
+    minimal: {
+      animation: "",
+      glow: "drop-shadow-[0_0_2px_rgba(99,102,241,0.2)]",
+      transform: "rotate(0deg)",
+    }
+  };
+
+  const currentStyle = variantStyles[variant === "minimal" ? "minimal" : "default"];
+
   return (
-    <div className={`relative flex items-center justify-center ${sizeClasses[size]} ${className} group select-none`} aria-label="Notra AI Logo">
-      <svg
-        viewBox="0 0 100 100"
-        fill="none"
-        xmlns="http://www.w3.org/2000/svg"
-        className="w-full h-full relative z-10 drop-shadow-md transition-transform duration-500 group-hover:scale-105 group-hover:rotate-3"
+    <div className={`relative flex items-center gap-2 ${className} group select-none`} aria-label="Notra AI Logo">
+      {/* Logo 容器 - 圆角矩形，渐变背景，玻璃面板效果 */}
+      <div 
+        className={`
+          relative ${sizeClasses[size]} 
+          rounded-xl
+          bg-gradient-to-br from-indigo-500/20 via-purple-500/20 to-blue-500/20
+          dark:from-indigo-500/30 dark:via-purple-500/30 dark:to-blue-500/30
+          backdrop-blur-sm
+          border border-indigo-400/30 dark:border-indigo-400/50
+          p-1.5
+          transition-all duration-500
+          group-hover:scale-105
+          group-hover:border-indigo-400/50 dark:group-hover:border-indigo-400/70
+          ${variant === "hero" ? "shadow-[0_0_20px_rgba(99,102,241,0.3)] dark:shadow-[0_0_20px_rgba(99,102,241,0.5)]" : "shadow-[0_0_10px_rgba(99,102,241,0.2)] dark:shadow-[0_0_10px_rgba(99,102,241,0.3)]"}
+        `}
         style={{
-          animation: 'float-subtle 4s ease-in-out infinite alternate',
+          transform: currentStyle.transform,
+          animation: currentStyle.animation,
         }}
       >
-        <defs>
-          <linearGradient id="notra-gradient" x1="10" y1="10" x2="90" y2="90" gradientUnits="userSpaceOnUse">
-            <stop offset="0%" stopColor="#6366F1" /> {/* Indigo-500 */}
-            <stop offset="50%" stopColor="#8B5CF6" /> {/* Violet-500 */}
-            <stop offset="100%" stopColor="#60A5FA" /> {/* Blue-400 */}
-          </linearGradient>
-        </defs>
-
-        {/* Notebook Base - Tilted */}
-        <path 
-          d="M20 85 L85 85 L80 15 L15 15 L20 85 Z" 
-          fill="url(#notra-gradient)"
-          className="shadow-lg"
+        {/* 渐变边框效果 - 伪元素 */}
+        <div 
+          className="absolute inset-0 rounded-xl opacity-50"
           style={{
-            transform: 'skewY(-5deg) translate(0px, 0px)',
-            transformOrigin: '50% 50%',
+            background: 'linear-gradient(135deg, rgba(99,102,241,0.4), rgba(139,92,246,0.4), rgba(96,165,250,0.4))',
+            filter: 'blur(1px)',
+            zIndex: -1,
           }}
         />
         
-        {/* Page Folds / Grid Lines */}
-        <path 
-          d="M25 25 L75 25 M25 35 L75 35 M25 45 L75 45 M25 55 L75 55" 
-          stroke="white"
-          strokeWidth="2"
-          strokeOpacity="0.15"
-          strokeLinecap="round"
-          style={{
-            transform: 'skewY(-5deg) translate(0px, 0px)',
-            transformOrigin: '50% 50%',
-          }}
-        />
-
-        {/* Central AI Core - Node Network & Glow */}
-        <g 
-          transform="translate(50 50)"
-          className="animate-[slow-pulse-glow_3s_ease-in-out_infinite]"
+        {/* Logo 图片 */}
+        <div 
+          className={`
+            relative w-full h-full rounded-lg overflow-hidden
+            ${currentStyle.glow}
+            transition-all duration-300
+          `}
         >
-          {/* Main Core (White Glow) */}
-          <circle cx="0" cy="0" r="10" fill="white" fillOpacity="0.9" />
-          
-          {/* Inner Node (Violet/AI Color) */}
-          <circle cx="0" cy="0" r="4" fill="#6366F1" className="shadow-2xl" />
-          
-          {/* Surrounding Nodes (AI/Knowledge) */}
-          <circle cx="0" cy="-20" r="2.5" fill="white" fillOpacity="0.8" />
-          <circle cx="18" cy="12" r="2.5" fill="white" fillOpacity="0.8" />
-          <circle cx="-18" cy="12" r="2.5" fill="white" fillOpacity="0.8" />
+          <Image
+            src="/notra-logo-v4.png"
+            alt="Notra Logo"
+            fill
+            className="object-contain"
+            priority
+            sizes="(max-width: 768px) 32px, 40px"
+          />
+        </div>
 
-          {/* Connections */}
-          <path d="M0 -10 L0 -17" stroke="white" strokeWidth="1.5" strokeOpacity="0.6" />
-          <path d="M9 5 L15 10" stroke="white" strokeWidth="1.5" strokeOpacity="0.6" />
-          <path d="M-9 5 L-15 10" stroke="white" strokeWidth="1.5" strokeOpacity="0.6" />
-        </g>
-
-        {/* Top Highlight/Shimmer */}
-        <path 
-          d="M15 15 L80 15 L78 20 L18 20 L15 15 Z" 
-          fill="white"
-          fillOpacity="0.1"
+        {/* 内部发光效果 */}
+        <div 
+          className="absolute inset-0 rounded-lg pointer-events-none"
           style={{
-            transform: 'skewY(-5deg) translate(0px, 0px)',
-            transformOrigin: '50% 50%',
+            background: 'radial-gradient(circle at center, rgba(255,255,255,0.1) 0%, transparent 70%)',
+            mixBlendMode: 'overlay',
           }}
         />
-      </svg>
+      </div>
+
+      {/* Notra 文本 - 可选显示 */}
+      {showText && (
+        <span 
+          className={`
+            ${textSizeClasses[size]}
+            font-bold
+            bg-clip-text text-transparent
+            bg-gradient-to-r from-indigo-400 via-purple-400 to-blue-400
+            tracking-tight
+            transition-all duration-300
+            group-hover:from-indigo-300 group-hover:via-purple-300 group-hover:to-blue-300
+            ${variant === "hero" ? "drop-shadow-[0_0_8px_rgba(99,102,241,0.4)]" : ""}
+          `}
+        >
+          Notra
+        </span>
+      )}
     </div>
   );
 }
