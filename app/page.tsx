@@ -15,6 +15,7 @@ import {
   Globe,
   Library
 } from 'lucide-react';
+import WelcomeUser from '@/components/WelcomeUser';
 
 // ---------------------------------------------------------
 // 🔧 修复：使用自定义 Link 组件替代 next/link 以适应预览环境
@@ -147,6 +148,10 @@ const Navbar = () => {
             <span className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-slate-900 to-slate-700 tracking-tight group-hover:from-blue-600 group-hover:to-indigo-600 transition-all duration-300">
               Notra
             </span>
+            {/* Welcome User Component */}
+            <div className="ml-6 hidden md:block">
+              <WelcomeUser />
+            </div>
           </Link>
 
           {/* Desktop Links */}

@@ -51,9 +51,9 @@ export default function OnboardingStep1() {
       localStorage.setItem('onboarding_stage', categoryId);
     }
     
-    // Navigate to Step 2-location (Country & Language) after animation
+    // Navigate to Step 2-country (Country selection) after animation
     setTimeout(() => {
-      window.location.href = '/onboarding/step2-location';
+      window.location.href = '/onboarding/step2-country';
     }, 300);
   };
 

@@ -7,7 +7,7 @@ import { type OnboardingRole, type OnboardingSampleBundle } from '@/types/notra'
 
 // Math inline component for consistent mathematical notation rendering
 const MathInline = ({ children }: { children: React.ReactNode }) => (
-  <span className="font-mono text-[15px] tracking-tight align-middle text-slate-800">
+  <span className="math-text text-slate-800">
     {children}
   </span>
 );
@@ -163,12 +163,10 @@ export default function OnboardingStep4() {
             {/* Left: Main Formula Card */}
             <div className="bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 rounded-2xl p-8 border-2 border-blue-200 shadow-lg hover:shadow-xl transition-shadow">
               <h4 className="text-sm font-semibold text-slate-600 uppercase tracking-wider mb-4">Main Formula</h4>
-              <div className="bg-white/80 backdrop-blur-sm rounded-xl p-6 border border-blue-100">
-                <p className="text-2xl font-mono text-slate-900 text-center leading-relaxed">
-                  <MathInline>f'(x) = lim</MathInline>
-                  <sub className="text-lg">h→0</sub>
-                  <MathInline> [f(x+h) - f(x)] / h</MathInline>
-                </p>
+              <div className="bg-white/80 backdrop-blur-sm rounded-xl p-8 border border-blue-100">
+                <div className="math-block text-slate-900 text-center">
+                  f'(x) = lim<sub className="text-xl">h→0</sub> [f(x+h) - f(x)] / h
+                </div>
               </div>
               <p className="text-sm text-slate-600 mt-4 text-center">
                 Limit definition of derivative
@@ -245,13 +243,8 @@ export default function OnboardingStep4() {
               {sections.formalDefinition.title}
             </h3>
             <div className="bg-white/70 backdrop-blur-sm p-4 rounded-lg border border-indigo-100">
-              <p className="text-lg font-mono text-slate-900 leading-relaxed">
-                {sections?.formalDefinition?.definition?.split(/(x|h|f|lim|→|→)/g).map((part: string, i: number) => {
-                  if (['x', 'h', 'f', 'lim', '→'].includes(part)) {
-                    return <MathInline key={i}>{part}</MathInline>;
-                  }
-                  return part;
-                })}
+              <p className="math-text text-lg text-slate-900 leading-relaxed">
+                {sections?.formalDefinition?.definition}
               </p>
             </div>
             <p className="text-base text-slate-700 leading-relaxed">
@@ -304,15 +297,15 @@ export default function OnboardingStep4() {
               {sections.workedExample.title}
             </h3>
             <div className="bg-white/70 backdrop-blur-sm p-4 rounded-lg border border-blue-100 mb-4">
-              <p className="text-lg font-mono text-slate-900 leading-relaxed">
+              <p className="math-text text-lg text-slate-900 leading-relaxed">
                 {sections.workedExample.problem}
               </p>
             </div>
-            <ol className="space-y-2">
+            <ol className="space-y-3">
               {sections?.workedExample?.steps?.map((step: string, idx: number) => (
                 <li key={idx} className="flex items-start gap-3">
                   <span className="text-[#9F6BFF] font-bold mt-1">{idx + 1}.</span>
-                  <span className="text-slate-700 text-base leading-relaxed">{step}</span>
+                  <span className="math-text text-slate-700 text-base leading-relaxed">{step}</span>
                 </li>
               ))}
             </ol>
@@ -341,10 +334,10 @@ export default function OnboardingStep4() {
                       } hover:bg-indigo-50/50 transition-colors`}
                     >
                       <td className="px-6 py-4">
-                        <MathInline>{row.function}</MathInline>
+                        <span className="math-text">{row.function}</span>
                       </td>
                       <td className="px-6 py-4">
-                        <MathInline>{row.derivative}</MathInline>
+                        <span className="math-text">{row.derivative}</span>
                       </td>
                       <td className="px-6 py-4 text-slate-600">{row.notes}</td>
                     </tr>

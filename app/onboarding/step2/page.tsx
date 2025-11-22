@@ -29,8 +29,8 @@ export default function OnboardingStep2() {
       
       // Optional: Check country and language are set
       if (!country || !contentLanguage) {
-        // If missing, go back to step2-location
-        window.location.href = '/onboarding/step2-location';
+        // If missing, go back to step2-country (country selection)
+        window.location.href = '/onboarding/step2-country';
         return;
       }
       

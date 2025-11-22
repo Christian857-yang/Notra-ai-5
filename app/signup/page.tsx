@@ -7,7 +7,7 @@ import Link from 'next/link';
 export default function SignupPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [name, setName] = useState('');
+  const [displayName, setDisplayName] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
 
@@ -34,7 +34,7 @@ export default function SignupPage() {
       // Store user info (mock for now)
       if (typeof window !== 'undefined') {
         localStorage.setItem('user_email', email);
-        localStorage.setItem('user_name', name || 'Notra Learner');
+        localStorage.setItem('user_display_name', displayName || 'Notra Learner');
         localStorage.setItem('user_logged_in', 'true');
         // Redirect to HOME page (not dashboard) - user can access Dashboard from Home
         window.location.href = '/';
@@ -73,23 +73,26 @@ export default function SignupPage() {
         {/* Signup Form */}
         <div className="bg-white rounded-3xl shadow-2xl p-8 md:p-10 border border-slate-100">
           <form onSubmit={handleSubmit} className="space-y-6">
-            {/* Name Field */}
+            {/* Display Name Field */}
             <div>
-              <label htmlFor="name" className="block text-sm font-semibold text-slate-700 mb-2">
-                Full Name
+              <label htmlFor="displayName" className="block text-sm font-semibold text-slate-700 mb-2">
+                Display Name
               </label>
               <div className="relative">
                 <User className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
                 <input
-                  id="name"
+                  id="displayName"
                   type="text"
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
-                  placeholder="Enter your name"
+                  value={displayName}
+                  onChange={(e) => setDisplayName(e.target.value)}
+                  placeholder="Pick a name, e.g. &quot;MathNinja&quot;"
                   className="w-full pl-12 pr-4 py-3 border-2 border-slate-200 rounded-xl focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 transition-all outline-none"
                   required
                 />
               </div>
+              <p className="mt-1 text-xs text-slate-500">
+                This is how you'll appear in Notra. You can use a nickname.
+              </p>
             </div>
 
             {/* Email Field */}
